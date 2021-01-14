@@ -1,0 +1,12 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: myconsulserver
+  cloud:
+    consul:
+      host: 192.168.197.134
+      port: 8500
+      discovery:
+        instance-id: myconsul-id
+        service-name: myconsulname
