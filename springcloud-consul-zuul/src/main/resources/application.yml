@@ -1,0 +1,52 @@
+server:
+  port: 9998
+spring:
+  application:
+    #如果未配置spring.cloud.consul.discovery.service-name 则使用当前服务名
+    name: consul-zuul
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        instance-id: consul-zuul-01
+        health-check-path: /actuator/health
+        health-check-timeout: 10s
+        register-health-check: true
+ribbon:
+  # 请求连接的超时时间
+  connectTimeout: 2000
+  # 请求处理的超时时间
+  readTimeout: 2000
+  #对当前实例的重试次数
+  maxAutoRetries: 2
+  # 切换实例的重试次数  对失败的服务只访问3次
+  maxAutoRetriesNextServer: 3
+  #对所有操作请求都进行重试
+  okToRetryOnAllOperations: true
+feign:
+  hystrix:
+    enabled: true
+#禁止hystrix超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+#zuul网关
+zuul:
+  routes:
+    #此名称可以随意编写(最好一目了然)
+    member:
+      #访问eureka-member服务: http://localhost:9998/api-member/member/getMember
+      #服务名称为eureka-member的请求都会转到当前请求下
+      #service-id 服务名称
+      path: /api-member/**
+      service-id: consul-member
+    #此名称可以随意编写
+    order:
+      #访问eureka-order服务: http://localhost:9998/eureka-order/order/getOrder
+      #服务名称为eureka-order的请求都会转到当前请求下
+      path: /api-order/**
+      service-id: consul-order

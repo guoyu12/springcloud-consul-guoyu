@@ -1,0 +1,46 @@
+server:
+  port: 8882
+spring:
+  application:
+    #如果未配置spring.cloud.consul.discovery.service-name 则使用当前服务名
+    name: consul-member
+  cloud:
+    ##POST访问http://localhost:8882/actuator/refresh可实现手动刷新
+    config:
+      ###表示读取版本环境  #获取git配置文件 文件全名springcloud-config-dev.properties dev为后缀
+      profile: dev
+      #config服务地址
+      uri: http://localhost:9988
+      #获取git配置文件 文件全名springcloud-config-dev.properties
+      name: springcloud-config
+      #分支
+      label: main
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        instance-id: consul-member-02
+        health-check-path: /actuator/health
+        health-check-timeout: 10s
+        register-health-check: true
+ribbon:
+  # 请求连接的超时时间
+  connectTimeout: 2000
+  # 请求处理的超时时间
+  readTimeout: 2000
+  #对当前实例的重试次数
+  maxAutoRetries: 2
+  # 切换实例的重试次数  对失败的服务只访问3次
+  maxAutoRetriesNextServer: 3
+  #对所有操作请求都进行重试
+  okToRetryOnAllOperations: true
+feign:
+  hystrix:
+    enabled: true
+#禁止hystrix超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
