@@ -5,8 +5,15 @@ spring:
     name: myconsulserver
   cloud:
     consul:
-      host: 192.168.197.134
+      host: localhost
       port: 8500
       discovery:
-        instance-id: myconsul-id
-        service-name: myconsulname
+        instance-id: myconsul-id001
+        health-check-path: /actuator/health
+        health-check-timeout: 10s
+        register-health-check: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
